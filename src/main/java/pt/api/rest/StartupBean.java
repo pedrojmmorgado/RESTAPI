@@ -13,8 +13,8 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.jboss.logging.Logger;
 
-import pt.rest.api.provider.IProvider;
-import pt.rest.api.provider.ProviderFactory;
+import pt.api.rest.provider.IProvider;
+import pt.api.rest.provider.ProviderFactory;
 
 /**
  * Startup bean for REST API application.

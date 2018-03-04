@@ -1,4 +1,4 @@
-package pt.rest.api.provider;
+package pt.api.rest.provider;
 
 import java.util.List;
 import java.util.Map;

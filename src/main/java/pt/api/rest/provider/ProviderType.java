@@ -1,4 +1,4 @@
-package pt.rest.api.provider;
+package pt.api.rest.provider;
 
 /**
  * Supported providers 
