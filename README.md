@@ -1,2 +1,2 @@
 # RESTAPI 
-simple REST API for searching in all Github (BitBucket, GitLab) code.
+simple REST API for searching in all Github (and BitBucket, GitLab) code.
