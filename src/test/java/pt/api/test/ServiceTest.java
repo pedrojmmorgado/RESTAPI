@@ -23,13 +23,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * //TODO: add more test scenarios
+ * TODO: add more test scenarios
  * @author Altran
  *
  */
 @RunWith(Arquillian.class)
 @RunAsClient
-public class ServiceTest {
+public class ServiceTest { 
 	private static final Logger LOGGER = Logger.getLogger(ServiceTest.class);
 
 
