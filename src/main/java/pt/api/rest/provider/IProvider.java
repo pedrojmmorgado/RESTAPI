@@ -19,9 +19,12 @@ public interface IProvider {
 	/**
 	 * Search by query 
 	 * @param query
+	 * @param per_page
+	 * @param page
+	 * @param orderBy
 	 * @return
 	 */
-	List<Map<String, Object>> searchByQuery(String query);
+	List<Map<String, Object>> searchByQuery(String query, int per_page, int page, String orderBy);
 	
 	
 }

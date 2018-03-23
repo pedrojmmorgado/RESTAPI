@@ -36,7 +36,7 @@ public class BitBucketProvider implements IProvider {
 	 * @see pt.rest.api.provider.IProvider#searchByQuery(java.lang.String)
 	 */
 	@Override
-	public List<Map<String, Object>> searchByQuery(String query) {
+	public List<Map<String, Object>> searchByQuery(String query, int per_page, int page, String orderBy) {
 		
 		// TODO: Should be implemented!
 		return null;

@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.LocalBean;
@@ -28,7 +29,9 @@ public class StartupBean {
 
 	private static final Logger LOGGER=Logger.getLogger(StartupBean.class);
 
-	private static final String CONFIG_FILE="../../../../../../config/configuration.properties";
+	//Example configuration file properties in: "../../../../../../config/domain.properties"
+	//Other alternative can be: using environment variables for configuration
+	private static final String CONFIG_FILE_PROPERTY = "configuration.file"; 
 
 	private static final String CONFIG_API_PROVIDER = "api.provider";
 	private static final String CONFIG_API_BASE_URL = "api.baseUrl";
@@ -47,31 +50,46 @@ public class StartupBean {
 	 */
 	@PostConstruct
 	public void init() {
-
+		
+		ResourceBundle configuration = ResourceBundle.getBundle("configuration");
+		LOGGER.infov("Loading configurations from {0}", configuration.getObject(CONFIG_FILE_PROPERTY));
+		
 		//Load properties from configuration file
 		Properties props = new Properties();
 
-		try (FileInputStream stream = new FileInputStream(CONFIG_FILE)) {
+		try (FileInputStream stream=new FileInputStream((String) configuration.getObject(CONFIG_FILE_PROPERTY))) {
 			props.load(stream);
 		} catch (IOException e) {
-			throw new IllegalArgumentException("Invalid config file: " + CONFIG_FILE, e);
+			throw new IllegalArgumentException("Invalid config file: "+configuration.getObject(CONFIG_FILE_PROPERTY),e);
 		}
+		
+		//parse all properties
+		processConfigurationProperties(props);
 
+		//select provider via configuration
+		this.provider = new ProviderFactory().getProvider(providerType);
+	}
+
+	/**
+	 * Parse all properties
+	 * @param props
+	 */
+	private void processConfigurationProperties(Properties props) {
+		
 		//parse all properties
 		providerType = props.getProperty(CONFIG_API_PROVIDER);
 		if (providerType == null || providerType.isEmpty()) {
 			throw new IllegalArgumentException(CONFIG_API_PROVIDER + " is null or empty");
 		}
 
+		//URL	
 		apiBaseUrl = props.getProperty(CONFIG_API_BASE_URL);
 		if (apiBaseUrl == null || apiBaseUrl.isEmpty()) {
 			throw new IllegalArgumentException(CONFIG_API_BASE_URL + " is null or empty");
 		}
-
+		
+		//authentication
 		initBasicAuthentication(props.getProperty(CONFIG_API_USERNAME), props.getProperty(CONFIG_API_PASSWORD));
-
-		//select provider via configuration
-		this.provider = new ProviderFactory().getProvider(providerType);
 	}
 	
 	/**

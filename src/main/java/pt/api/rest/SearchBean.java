@@ -24,9 +24,9 @@ public class SearchBean implements ISearchService {
 	 * @see pt.api.rest.ISearchService#searchByQuery(java.lang.String)
 	 */
 	@Override
-	public List<Map<String, Object>> searchByQuery(String query) {
-
-		return this.configs.getProvider().searchByQuery(query);
+	public List<Map<String, Object>> searchByQuery(String query, int per_page, int page, String orderBy) {
+		return this.configs.getProvider().searchByQuery(query, per_page, page, orderBy);
 	}
+
 
 }

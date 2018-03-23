@@ -53,39 +53,56 @@ public class GitHubProvider implements IProvider {
 	 * @see pt.rest.api.provider.IProvider#searchByQuery(java.lang.String)
 	 */
 	@Override
-	public List<Map<String, Object>> searchByQuery(String query) {
-		Client client=ClientBuilder.newClient();
+	public List<Map<String, Object>> searchByQuery(String query, int per_page, int page, String orderBy) {
+		
+		if (query != null && !query.isEmpty()) {
+			
+			Client client = ClientBuilder.newClient();
+
+			// Process parameters and ensure default values
+			query = this.processParameters(query, per_page, page, orderBy);
+
+			// request
+			WebTarget target = client.target(configs.getApiBaseUrl() + URL_SEPARATOR + SEARCH_OPERATION + URL_SEPARATOR + query);
+
+			// response
+			Response resp = target.request().header("Authorization", configs.getBasicAuthentication()).get();
+
+			// format result
+			try {
+				List<Map<String, Object>> articles = (List<Map<String, Object>>) ClientUtils.getResponseEntity("searchByQuery", resp, LOGGER);
+
+				return this.formatData(articles);
+			} catch (ClientException e) {
+				LOGGER.error("", e);
+			}
+		}
+		
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Process parameters and ensure default values
+	 * @param query
+	 * @param per_page
+	 * @param page
+	 * @param orderBy
+	 * @return
+	 */
+	private String processParameters(String query, int per_page, int page, String orderBy) {
+
+		//ensure page number
+		if(page>=0){
+			query+=QUERY_STRING_SEPARATOR.concat("page=") + page; // The page number should be changeable by a query string parameter
+		}
 
 		//ensure default values per page
-		if(!query.toLowerCase().contains("per_page=".toLowerCase())){
-			query+=QUERY_STRING_SEPARATOR+"per_page=25"; // The number of hits per page should be 25 by default
-		}
+		query+=QUERY_STRING_SEPARATOR.concat("per_page=") + per_page; //The number of hits per page should be 25 by default, but must be changeable by a query string parameter
+
 		//ensure sort method
-		if(!query.toLowerCase().contains("sort=".toLowerCase())){
-			query+=QUERY_STRING_SEPARATOR+"sort=score"; // The sorting should be by score
-		}		
-
-		//request
-		WebTarget target = client
-				.target(configs.getApiBaseUrl() + URL_SEPARATOR + SEARCH_OPERATION + URL_SEPARATOR + query);
+		query+=QUERY_STRING_SEPARATOR.concat("sort=").concat(orderBy); // The sorting should be by score
 		
-		//response 
-		Response resp=target
-				.request()
-				.header("Authorization", configs.getBasicAuthentication())
-				.get();
-
-		//format result
-		try {
-			List<Map<String, Object>> articles = (List<Map<String, Object>>) ClientUtils.getResponseEntity("searchByQuery", resp, LOGGER);
-			
-			return formatData(articles);
-		}
-		catch(ClientException e) {
-			LOGGER.error("", e);
-		}
-
-		return Collections.emptyList();
+		return query;
 	}
 	
 	
