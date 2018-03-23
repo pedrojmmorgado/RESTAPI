@@ -100,7 +100,7 @@ public class GitHubProvider implements IProvider {
 		query+=QUERY_STRING_SEPARATOR.concat("per_page=") + per_page; //The number of hits per page should be 25 by default, but must be changeable by a query string parameter
 
 		//ensure sort method
-		query+=QUERY_STRING_SEPARATOR.concat("sort=").concat(orderBy); // The sorting should be by score
+		query+=QUERY_STRING_SEPARATOR.concat("sort=").concat(orderBy); // The sorting should be by score, but must be changeable by a query string parameter
 		
 		return query;
 	}

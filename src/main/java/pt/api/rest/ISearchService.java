@@ -21,10 +21,10 @@ public interface ISearchService {
 
 	/**
 	 * Search by query.
-	 * @param query
-	 * @param per_page
-	 * @param page
-	 * @param orderBy
+	 * @param query 
+	 * @param per_page - The number of hits per page should be 25 by default, but must be changeable by a query string parameter
+	 * @param page - The page number should be changeable by a query string parameter
+	 * @param orderBy -  The sorting should be by score, but must be changeable by a query string parameter
 	 * @return
 	 */
 	@GET
