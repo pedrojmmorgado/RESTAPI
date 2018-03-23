@@ -13,6 +13,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.jboss.logging.Logger;
 
@@ -79,6 +80,37 @@ public class GitHubProvider implements IProvider {
 		}
 		
 		return Collections.emptyList();
+	}
+	
+	/* (non-Javadoc)
+	 * @see pt.rest.api.provider.IProvider#searchByQuery(java.lang.String)
+	 */
+	@Override
+	public Response searchAllByQuery(String query, int per_page, int page, String orderBy) {
+		
+		Object result = null;
+		
+		if (query != null && !query.isEmpty()) {
+			
+			Client client = ClientBuilder.newClient();
+
+			// Process parameters and ensure default values
+			query = this.processParameters(query, per_page, page, orderBy);
+
+			// request
+			WebTarget target = client.target(configs.getApiBaseUrl() + URL_SEPARATOR + SEARCH_OPERATION + URL_SEPARATOR + query);
+
+			// response
+			Response resp = target.request().header("Authorization", configs.getBasicAuthentication()).get();
+			
+			result = resp.readEntity(Object.class);
+			
+		}else{
+			result = Collections.emptyList();
+		}
+			
+		
+		return Response.status(Status.OK).entity(result).build();
 	}
 
 	/**
